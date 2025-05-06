@@ -2,7 +2,24 @@
     "id": 2,
     "subject": "Issue with Email certificate",
     "status": "Client response pending",
-    "addedAt": "2020-09-23"
+    "addedAt": "2020-09-23",
+    "history": [
+      {
+        "date": "2020-10-10",
+       "message": "idk this message",
+       "messageBy": "client"
+      },
+      {
+        "date": "2020-10-11",
+       "message": "idk this message2",
+       "messageBy": "operator"
+      },
+      {
+        "date": "2020-10-12",
+       "message": "idk this message3",
+       "messageBy": "dev"
+      }
+    ]
   },
   {
     "id": 3,
