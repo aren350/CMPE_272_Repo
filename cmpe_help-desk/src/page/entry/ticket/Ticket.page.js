@@ -37,6 +37,7 @@ export const Ticket = () => {
             <Col className='text-font-weight-bolder txt-secondary'>
                 <div className = 'ticketID'> <strong>Ticket ID: </strong> {tid} </div>
                 <div className='subject'> <strong>Subject: </strong> {ticket.subject}</div>
+                <div className='priority'> <strong>Priority: </strong> {ticket.priority}</div>
                 <div className='openDate'><strong>Open Date:  </strong> {ticket.addedAt}</div>
                 <div className= 'category'> <strong>Category: </strong> {ticket.category}</div>
                 <div className='status'><strong>Status: </strong> {ticket.status}</div>

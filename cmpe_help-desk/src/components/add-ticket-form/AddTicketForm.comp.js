@@ -17,6 +17,21 @@ export const AddTicketForm = ({handleOnsubmit,handleOnchange, frmDt}) => {
                             required/>
                     </Col>
                 </Form.Group>
+                <Form.Group as={Row}>
+                    <Form.Label column sm ={3}>Priority</Form.Label>
+                    <Col sm={9}>
+                        <Form.Select
+                            name="priority"
+                            value = {frmDt.priority}
+                            onChange={handleOnchange}
+                            required>
+
+                            <option>Low</option>
+                            <option>Medium</option>
+                            <option>High</option>
+                        </Form.Select>
+                    </Col>
+                </Form.Group>
                 <Form.Group as ={Row}>
                     <Form.Label column sm={3}>Issue Date</Form.Label>
                     <Col sm= {9}>
@@ -24,7 +39,7 @@ export const AddTicketForm = ({handleOnsubmit,handleOnchange, frmDt}) => {
                             type="date"
                             value = {frmDt.date}
                             name="issueDate"
-                            onChange={handleOnchange }
+                            onChange={handleOnchange}
                             required
                         />
                     </Col>

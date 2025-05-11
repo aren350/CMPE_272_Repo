@@ -10,6 +10,7 @@ export const TicketTable = ({tickets}) => {
         <tr>
           <th>#</th>
           <th>Subjects</th>
+          <th>Priority</th>
           <th>Status</th>
           <th>Category</th>
           <th>Opened Date</th>
@@ -24,6 +25,7 @@ export const TicketTable = ({tickets}) => {
               {row.subject}
             </Link>
             </td>
+          <td>{row.priority}</td>
           <td>{row.status}</td>
           <td>{row.category}</td>
           <td>{row.addedAt}</td>
