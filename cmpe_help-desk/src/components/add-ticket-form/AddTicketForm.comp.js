@@ -29,6 +29,24 @@ export const AddTicketForm = ({handleOnsubmit,handleOnchange, frmDt}) => {
                         />
                     </Col>
                 </Form.Group>
+                <Form.Group as ={Row}>
+                    <Form.Label column sm={3}>Category</Form.Label>
+                    <Col sm= {9}>
+                        <Form.Select
+                            value = {frmDt.category}
+                            name="category"
+                            onChange={handleOnchange }
+                            required
+                        >
+                            <option>Choose a Category</option>
+                            <option>Connectivity Issues</option>
+                            <option>Update Error</option>
+                            <option>Access Request</option>
+                            <option>Performance Related</option>
+                            <option>Service Outage</option>
+                        </Form.Select>
+                    </Col>
+                </Form.Group>
                 <Form.Group>
                     <Form.Label>Details</Form.Label>
                     <Form.Control
@@ -40,7 +58,7 @@ export const AddTicketForm = ({handleOnsubmit,handleOnchange, frmDt}) => {
                         required
                     />
                 </Form.Group>
-                <Button type="submit" variant = "info"> Add </Button>
+                <Button className='mt-2' type="submit" variant = "info"> Add </Button>
             </Form>
 
     </div>

@@ -35,10 +35,11 @@ export const Ticket = () => {
         </Row>
         <Row>
             <Col className='text-font-weight-bolder txt-secondary'>
-                {tid}
-                <div className='subject'>Subject: {ticket.subject}</div>
-                <div className='openDate'>Open Date: {ticket.addedAt}</div>
-                <div className='status'>Status: {ticket.status}</div>
+                <div className = 'ticketID'> <strong>Ticket ID: </strong> {tid} </div>
+                <div className='subject'> <strong>Subject: </strong> {ticket.subject}</div>
+                <div className='openDate'><strong>Open Date:  </strong> {ticket.addedAt}</div>
+                <div className= 'category'> <strong>Category: </strong> {ticket.category}</div>
+                <div className='status'><strong>Status: </strong> {ticket.status}</div>
             </Col>
             <Col className='text-right'>
                 <Button variant="outline-info">Close Ticket</Button>
