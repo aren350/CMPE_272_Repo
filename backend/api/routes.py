@@ -17,10 +17,10 @@ def get_all_tickets():
         abort(500, description=str(e))
 
 # GET ticket by ID
-@app.route('/tickets/<int:ticket_id>', methods=['GET'])
+@app.route('/tickets/<ticket_id>', methods=['GET'])
 def get_ticket(ticket_id):
     try:
-        response = table.get_item(Key={'id': ticket_id})
+        response = table.get_item(Key={'TicketId': ticket_id})
         item = response.get('Item')
         if item:
             return jsonify(item), 200
@@ -35,11 +35,11 @@ def create_ticket():
     data = request.get_json()
     if not data or 'title' not in data or 'description' not in data:
         abort(400, description="Missing required fields")
-    # Generate a unique id (for demo, use timestamp or uuid)
-    import time
-    ticket_id = int(time.time())
+    # Generate a unique id using uuid
+    import uuid
+    ticket_id = str(uuid.uuid4())
     ticket = {
-        "id": ticket_id,
+        "TicketId": ticket_id,
         "title": data["title"],
         "description": data["description"],
         "status": "open"
@@ -51,7 +51,7 @@ def create_ticket():
         abort(500, description=str(e))
 
 # PUT update ticket
-@app.route('/tickets/<int:ticket_id>', methods=['PUT'])
+@app.route('/tickets/<ticket_id>', methods=['PUT'])
 def update_ticket(ticket_id):
     data = request.get_json()
     update_expr = []
@@ -64,7 +64,7 @@ def update_ticket(ticket_id):
         abort(400, description="No valid fields to update")
     try:
         response = table.update_item(
-            Key={'id': ticket_id},
+            Key={'TicketId': ticket_id},
             UpdateExpression="SET " + ", ".join(update_expr),
             ExpressionAttributeValues=expr_attr_vals,
             ReturnValues="ALL_NEW"
@@ -74,10 +74,10 @@ def update_ticket(ticket_id):
         abort(500, description=str(e))
 
 # DELETE ticket
-@app.route('/tickets/<int:ticket_id>', methods=['DELETE'])
+@app.route('/tickets/<ticket_id>', methods=['DELETE'])
 def delete_ticket(ticket_id):
     try:
-        table.delete_item(Key={'id': ticket_id})
+        table.delete_item(Key={'TicketId': ticket_id})
         return jsonify({"message": "Ticket deleted"}), 200
     except ClientError as e:
         abort(500, description=str(e))
