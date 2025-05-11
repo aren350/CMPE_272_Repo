@@ -20,7 +20,7 @@ export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass})
                         required/>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Password</Form.Label>
+                    <Form.Label className='mt-1'>Password</Form.Label>
                     <Form.Control
                         type="password"
                         name="password"
@@ -30,7 +30,7 @@ export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass})
                         required
                     />
                 </Form.Group>
-                <Button type="submit"> Login </Button>
+                <Button className = "mt-3" type="submit"> Login </Button>
             </Form>
             <hr />
             </Col>

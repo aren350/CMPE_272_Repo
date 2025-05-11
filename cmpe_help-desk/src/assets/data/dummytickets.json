@@ -1,7 +1,9 @@
 [{
     "id": 2,
     "subject": "Issue with Email certificate",
+    "priority": "High",
     "status": "Client response pending",
+    "category": "Access Request",
     "addedAt": "2020-09-23",
     "history": [
       {
@@ -24,12 +26,16 @@
   {
     "id": 3,
     "subject": "Issue app crashing",
+    "priority": "Medium",
     "status": "Client response pending",
+    "category":"Performance Related",    
     "addedAt": "2020-09-23"
   },
   {
     "id": 4,
     "subject": "Issue with ssl certificate",
+    "priority": "Low",
     "status": "Client response pending",
+    "category": "Access Request",
     "addedAt": "2020-09-23"
   }]
