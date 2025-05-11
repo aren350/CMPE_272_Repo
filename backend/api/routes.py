@@ -5,13 +5,14 @@ from botocore.exceptions import ClientError
 app = Flask(__name__)
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-2')  # Change region as needed
-table = dynamodb.Table('Tickets')  # Make sure this table exists in DynamoDB
+ticket_table = dynamodb.Table('Tickets')  # Make sure this table exists in DynamoDB
+users_table = dynamodb.Table('Users') 
 
 # GET all tickets
 @app.route('/tickets', methods=['GET'])
 def get_all_tickets():
     try:
-        response = table.scan()
+        response = ticket_table.scan()
         return jsonify(response.get('Items', [])), 200
     except ClientError as e:
         abort(500, description=str(e))
@@ -20,7 +21,7 @@ def get_all_tickets():
 @app.route('/tickets/<ticket_id>', methods=['GET'])
 def get_ticket(ticket_id):
     try:
-        response = table.get_item(Key={'TicketId': ticket_id})
+        response = ticket_table.get_item(Key={'TicketId': ticket_id})
         item = response.get('Item')
         if item:
             return jsonify(item), 200
@@ -45,7 +46,7 @@ def create_ticket():
         "status": "open"
     }
     try:
-        table.put_item(Item=ticket)
+        ticket_table.put_item(Item=ticket)
         return jsonify(ticket), 201
     except ClientError as e:
         abort(500, description=str(e))
@@ -63,7 +64,7 @@ def update_ticket(ticket_id):
     if not update_expr:
         abort(400, description="No valid fields to update")
     try:
-        response = table.update_item(
+        response = ticket_table.update_item(
             Key={'TicketId': ticket_id},
             UpdateExpression="SET " + ", ".join(update_expr),
             ExpressionAttributeValues=expr_attr_vals,
@@ -77,10 +78,35 @@ def update_ticket(ticket_id):
 @app.route('/tickets/<ticket_id>', methods=['DELETE'])
 def delete_ticket(ticket_id):
     try:
-        table.delete_item(Key={'TicketId': ticket_id})
+        ticket_table.delete_item(Key={'TicketId': ticket_id})
         return jsonify({"message": "Ticket deleted"}), 200
     except ClientError as e:
         abort(500, description=str(e))
+
+# Signup User
+@app.route('/signup', methods=['POST'])
+def signup_user(data):
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    if not username or not password:
+        return jsonify({'error': 'Username and password are required'}), 400
+    try:
+        # Check if user already exists
+        response = users_table.get_item(Key={'Name': username})
+        if 'Item' in response:
+            return jsonify({'error': 'User already exists'}), 409
+
+        # Add user
+        users_table.put_item(Item={
+            'Name': username,
+            'Password': password  # NEVER store raw passwords in production
+        })
+
+        return jsonify({'message': 'User created successfully'}), 201
+
+    except ClientError as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
