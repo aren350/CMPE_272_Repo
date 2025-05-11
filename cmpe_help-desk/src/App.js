@@ -6,6 +6,7 @@ import { Dashboard } from './page/entry/dashboard/Dashboard.page';
 import { AddTicket } from './page/entry/new-ticket/AddTicket.page';
 import { TicketLists } from './page/ticket-listing/TicketLists.page';
 import { Ticket } from './page/entry/ticket/Ticket.page';
+import Signup from './components/signup/Signup';
 import {BrowserRouter as Router,
   Route,
   Routes
@@ -43,6 +44,13 @@ function App() {
               <Ticket/>
               </PrivateRoute>
               }/>
+
+            <Route path= "/signup" element ={
+              <PrivateRoute>
+              <Signup/>
+              </PrivateRoute>
+              }/>
+
 
           </Route>
 
