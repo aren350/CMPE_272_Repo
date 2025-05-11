@@ -1,13 +1,18 @@
 import React from 'react'
+import { useState } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import PropTypes from 'prop-types'
-import { createTicket } from './api';
+import { createTicket } from '../api';
+import { useNavigate } from 'react-router-dom';
+//import { createTicket } from './api';
 
 export const AddTicketForm = ({}) => {
-    console.log(frmDt)
+    const navigate = useNavigate();
+    //console.log(frmDt)
     const [formData, setFormData] = useState({
         subject: "",
         date: "",
+        category: "",
         detail: "",
         priority: "",
       });
@@ -25,7 +30,7 @@ export const AddTicketForm = ({}) => {
             return;
         }
         try {
-            await createTicket({ title, description });
+            await createTicket({ formData });
             navigate('/');
         } catch(err) {
             console.error(err)
@@ -44,6 +49,21 @@ export const AddTicketForm = ({}) => {
                             value = {formData.subject}
                             onChange={handleOnchange}
                             required/>
+                    </Col>
+                </Form.Group>
+                <Form.Group as={Row}>
+                    <Form.Label column sm ={3}>Priority</Form.Label>
+                    <Col sm={9}>
+                        <Form.Select
+                            name="priority"
+                            value = {formData.priority}
+                            onChange={handleOnchange}
+                            required>
+
+                            <option>Low</option>
+                            <option>Medium</option>
+                            <option>High</option>
+                        </Form.Select>
                     </Col>
                 </Form.Group>
                 <Form.Group as ={Row}>
@@ -70,6 +90,24 @@ export const AddTicketForm = ({}) => {
                         />
                     </Col>
                 </Form.Group>
+                <Form.Group as ={Row}>
+                    <Form.Label column sm={3}>Category</Form.Label>
+                    <Col sm= {9}>
+                        <Form.Select
+                            value = {formData.category}
+                            name="category"
+                            onChange={handleOnchange }
+                            required
+                        >
+                            <option>Choose a Category</option>
+                            <option>Connectivity Issues</option>
+                            <option>Update Error</option>
+                            <option>Access Request</option>
+                            <option>Performance Related</option>
+                            <option>Service Outage</option>
+                        </Form.Select>
+                    </Col>
+                </Form.Group>
                 <Form.Group>
                     <Form.Label>Details</Form.Label>
                     <Form.Control
@@ -81,7 +119,7 @@ export const AddTicketForm = ({}) => {
                         required
                     />
                 </Form.Group>
-                <Button type="submit" variant = "info"> Add </Button>
+                <Button className='mt-2' type="submit" variant = "info"> Add </Button>
             </Form>
 
     </div>
