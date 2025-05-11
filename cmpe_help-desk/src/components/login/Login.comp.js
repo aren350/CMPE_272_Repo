@@ -1,14 +1,41 @@
 import React from 'react'
 import { Container, Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
+import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
+
 export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass}) => {
+    const navigate = useNavigate()
+
+    const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
+
+    const handleClick =() => {
+        navigate('/dashboard')
+    }
+
   return (
     <Container>
         <Row>
             <Col>
             <h1>Client Login </h1>
             <hr /> 
-            <Form onSubmit={handleOnsubmit}>
+
+            {!isAuthenticated ? (
+            <Button onClick={() => loginWithRedirect()}>
+              Login
+            </Button>
+          ) : (
+            <>
+              <p>Welcome, {user.name}!</p>
+              <div><Button  onClick={handleClick}>To the DashBoard</Button></div>
+
+              <Button className="mt-2" onClick={() => logout({ returnTo: window.location.origin })}>
+                Logout
+              </Button>
+            </>
+          )}
+
+            {/* <Form onSubmit={handleOnsubmit}>
                 <Form.Group>
                     <Form.Label>Email Address</Form.Label>
                     <Form.Control
@@ -31,7 +58,7 @@ export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass})
                     />
                 </Form.Group>
                 <Button className = "mt-3" type="submit"> Login </Button>
-            </Form>
+            </Form> */}
             <hr />
             </Col>
         </Row>
