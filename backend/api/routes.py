@@ -1,8 +1,10 @@
 import boto3
+from flask_cors import CORS
 from flask import Flask, request, jsonify, abort
 from botocore.exceptions import ClientError
 
 app = Flask(__name__)
+CORS(app)
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-2')  # Change region as needed
 ticket_table = dynamodb.Table('Tickets')  # Make sure this table exists in DynamoDB
