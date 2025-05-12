@@ -11,6 +11,11 @@ dynamodb = boto3.resource('dynamodb', region_name='us-east-2')  # Change region 
 ticket_table = dynamodb.Table('Tickets')  # Make sure this table exists in DynamoDB
 users_table = dynamodb.Table('Users') 
 
+@app.route('/')
+def home():
+    return "hello"
+
+
 # GET all tickets
 @app.route('/tickets', methods=['GET'])
 def get_all_tickets():
