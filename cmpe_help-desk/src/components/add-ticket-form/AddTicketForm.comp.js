@@ -7,7 +7,7 @@ function SubmitTicketPage() {
     title: "",
     date: "",
     category: "",
-    detail: "",
+    description: "",
     priority: "",
     tag: "",
     username: ""
@@ -18,6 +18,7 @@ function SubmitTicketPage() {
 
   // Load username from localStorage
   useEffect(() => {
+    localStorage.setItem('username', 'arenrohan@gmail.com')
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setFormData(prev => ({ ...prev, username: storedUsername }));
@@ -63,8 +64,8 @@ function SubmitTicketPage() {
           <input name="category" value={formData.category} onChange={handleChange} />
         </label><br /><br />
 
-        <label>Detail:<br />
-          <textarea name="detail" rows="4" value={formData.detail} onChange={handleChange} required />
+        <label>Description:<br />
+          <textarea name="description" rows="4" value={formData.description} onChange={handleChange} required />
         </label><br /><br />
 
         <label>Priority:<br />

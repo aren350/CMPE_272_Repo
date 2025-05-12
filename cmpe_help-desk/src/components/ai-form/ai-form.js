@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,13 +9,17 @@ function CreateAIPage() {
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    localStorage.setItem('username', 'arenrohan@gmail.com')
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setUsername(storedUsername)
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //localStorage.setItem('username', 'arenrohan@gmail.com')
-    console.log('username', localStorage.getItem('username'))
-    setUsername(localStorage.getItem('username'))
-    console.log(username)
     // Simple validation
     if (!title || !description) {
       setError('Title and Description are required');
