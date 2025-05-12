@@ -12,7 +12,7 @@ function CreateAIPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    localStorage.setItem('username', 'arenrohan@gmail.com')
+    //localStorage.setItem('username', 'arenrohan@gmail.com')
     console.log('username', localStorage.getItem('username'))
     setUsername(localStorage.getItem('username'))
     console.log(username)
