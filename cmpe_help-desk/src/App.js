@@ -3,10 +3,11 @@ import './App.css';
 import { Entry } from './page/entry/Entry.page';
 import { DefaultLayout } from './layout/DefaultLayout';
 import { Dashboard } from './page/entry/dashboard/Dashboard.page';
-import { AddTicket } from './page/entry/new-ticket/AddTicket.page';
+import SubmitTicketPage from './components/add-ticket-form/AddTicketForm.comp';
 import { TicketLists } from './page/ticket-listing/TicketLists.page';
 import { Ticket } from './page/entry/ticket/Ticket.page';
 import Signup from './components/signup/Signup';
+import CreateAIPage from './components/ai-form/ai-form';
 import {BrowserRouter as Router,
   Route,
   Routes
@@ -26,12 +27,13 @@ function App() {
                 <Dashboard/>
               </PrivateRoute>
               }/>
+
             <Route path= "/add-ticket" element ={
               <PrivateRoute>
-                <AddTicket/>
-              </PrivateRoute>
-              
+                <SubmitTicketPage/>
+              </PrivateRoute> 
               }/>
+              
             <Route path= "/tickets" element ={
               <PrivateRoute>
               <TicketLists/>
@@ -48,6 +50,12 @@ function App() {
             <Route path= "/signup" element ={
               <PrivateRoute>
               <Signup/>
+              </PrivateRoute>
+              }/>
+
+            <Route path= "/ai-form" element ={
+              <PrivateRoute>
+              <CreateAIPage/>
               </PrivateRoute>
               }/>
 
