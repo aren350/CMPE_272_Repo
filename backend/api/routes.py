@@ -58,6 +58,11 @@ def classify_ticket(title, description):
         traceback.print_exc()
         return 'medium', 'general'
 
+@app.route('/')
+def home():
+    return "hello"
+
+
 # GET all tickets
 @app.route('/tickets', methods=['GET'])
 def get_all_tickets():

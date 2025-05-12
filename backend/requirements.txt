@@ -1,4 +1,6 @@
-flask
+# flask
 boto3
 flask_cors
 openai
+Flask==2.3.3
+gunicorn==21.2.0

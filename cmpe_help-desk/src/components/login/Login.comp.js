@@ -31,23 +31,7 @@ export const Login = ({handleOnchange,formSwitcher, email, pass}) => {
             <Col>
             <h1>Client Login </h1>
             <hr /> 
-
-            {!isAuthenticated ? (
-            <Button onClick={() => loginWithRedirect()}>
-              Login
-            </Button>
-          ) : (
-            <>
-              <p>Welcome, {user.name}!</p>
-              <div><Button  onClick={handleClick}>To the DashBoard</Button></div>
-
-              <Button className="mt-2" onClick={() => logout({ returnTo: window.location.origin })}>
-                Logout
-              </Button>
-            </>
-          )}
-
-            {/* <Form onSubmit={handleOnsubmit}>
+            <Form onSubmit={handleOnsubmit}>
                 <Form.Group>
                     <Form.Label>Email Address</Form.Label>
                     <Form.Control
@@ -69,7 +53,7 @@ export const Login = ({handleOnchange,formSwitcher, email, pass}) => {
                     />
                 </Form.Group>
                 <Button className = "mt-3" type="submit"> Login </Button>
-            </Form> */}
+            </Form>
             <hr />
             </Col>
         </Row>
