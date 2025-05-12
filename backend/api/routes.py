@@ -2,14 +2,50 @@ import boto3
 from flask_cors import CORS
 from flask import Flask, request, jsonify, abort
 from botocore.exceptions import ClientError
+from werkzeug.security import generate_password_hash, check_password_hash
+import uuid
+import openai
+import traceback
+import json
 
 app = Flask(__name__)
 CORS(app)
 
-dynamodb = boto3.resource('dynamodb', region_name='us-east-2')  # Change region as needed
+# Load OpenAI API key from config.json
+with open("config.json") as f:
+    config = json.load(f)
+
+client = openai.OpenAI(api_key=config.get("openai_api_key"))
+
+# Create a boto3 session with the default profile
+session = boto3.Session(profile_name="default", region_name="us-east-2")
+dynamodb = session.resource("dynamodb")
 ticket_table = dynamodb.Table('Tickets')  # Make sure this table exists in DynamoDB
 users_table = dynamodb.Table('Users') 
 
+def classify_ticket(title, description):
+    prompt = f"""
+    Analyze the following IT support ticket and classify it.
+    Return a JSON with 'priority' (high, medium, low) and 'category' (e.g., network, hardware, software, login).
+
+    Title: {title}
+    Description: {description}
+    """
+    try:
+        print("Calling OpenAI API with:", title, description)
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=100
+        )
+        print("LLM raw response:", response)
+        result = json.loads(response.choices[0].message.content)
+        return result.get('priority', 'medium'), result.get('category', 'general')
+    except Exception as e:
+        print("LLM classification failed:", e)
+        traceback.print_exc()
+        return 'medium', 'general'
+    
 # GET all tickets
 @app.route('/tickets', methods=['GET'])
 def get_all_tickets():
@@ -39,13 +75,17 @@ def create_ticket():
     if not data or 'title' not in data or 'description' not in data:
         abort(400, description="Missing required fields")
     # Generate a unique id using uuid
-    import uuid
     ticket_id = str(uuid.uuid4())
+     # Classify using LLM
+    priority, category = classify_ticket(data["title"], data["description"])
+
     ticket = {
         "TicketId": ticket_id,
         "title": data["title"],
         "description": data["description"],
-        "status": "open"
+        "status": "open",
+        "priority": priority,
+        "category": category
     }
     try:
         ticket_table.put_item(Item=ticket)
@@ -87,7 +127,7 @@ def delete_ticket(ticket_id):
 
 # Signup User
 @app.route('/signup', methods=['POST'])
-def signup_user(data):
+def signup_user():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -98,11 +138,14 @@ def signup_user(data):
         response = users_table.get_item(Key={'Name': username})
         if 'Item' in response:
             return jsonify({'error': 'User already exists'}), 409
+        
+        # Hash password before storing
+        hashed_pw = generate_password_hash(password)
 
         # Add user
         users_table.put_item(Item={
             'Name': username,
-            'Password': password  # NEVER store raw passwords in production
+            'Password': hashed_pw
         })
 
         return jsonify({'message': 'User created successfully'}), 201
@@ -110,6 +153,19 @@ def signup_user(data):
     except ClientError as e:
         return jsonify({'error': str(e)}), 500
 
+# GET user by username (for testing)
+@app.route('/users/<username>', methods=['GET'])
+def get_user(username):
+    try:
+        response = users_table.get_item(Key={'Name': username})
+        item = response.get('Item')
+        if item:
+            return jsonify(item), 200
+        else:
+            return jsonify({'message': 'User not found'}), 404
+    except ClientError as e:
+        return jsonify({'error': str(e)}), 500
+    
 if __name__ == '__main__':
     app.run(debug=True)
 
