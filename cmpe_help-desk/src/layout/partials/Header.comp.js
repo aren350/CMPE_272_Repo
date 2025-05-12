@@ -1,17 +1,15 @@
 import React from "react";
-import { Navbar, Nav, NavbarBrand, NavbarCollapse } from "react-bootstrap";
+import { Navbar, Nav } from "react-bootstrap";
 import logo from "../../assets/img/ElizabethTT.png";
-import { LinkContainer } from "react-router-bootstrap";
-import { useNavigate, Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
 export const Header = () => {
-  const { isAuthenticated, user, logout, loginWithRedirect } = useAuth0();
-  const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuth0();
 
-  const logOut = () =>
-    //REMOVE AUTH TOKEN HERE
-    navigate("/");
+  const logOut = () => {
+    logout({ returnTo: window.location.origin });
+  };
 
   return (
     <Navbar collapseOnSelect bg="info" variant="dark" expand="md">
@@ -20,25 +18,30 @@ export const Header = () => {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="ml-auto">
-          <Nav.Link as={Link} to="/dashboard">
-            Dashboard
-          </Nav.Link>
-          <Nav.Link as={Link} to="/tickets">
-            Tickets
-          </Nav.Link>
-          {isAuthenticated ? (
-            <>
-              <Nav.Link disabled>{user && user.name}</Nav.Link>
-              <Nav.Link
-                onClick={() => logout({ returnTo: window.location.origin })}
-              >
-                Logout
-              </Nav.Link>
-            </>
-          ) : (
-            <Nav.Link onClick={() => loginWithRedirect()}>Login</Nav.Link>
+        <Nav
+          className="ml-auto"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+          }}
+        >
+          {isAuthenticated && user && (
+            <span style={{ color: "white", marginBottom: "0.5rem" }}>
+              Welcome, {user.name}
+            </span>
           )}
+          <div style={{ display: "flex", gap: "1rem" }}>
+            <Nav.Link as={Link} to="/dashboard">
+              Dashboard
+            </Nav.Link>
+            <Nav.Link as={Link} to="/tickets">
+              Tickets
+            </Nav.Link>
+            {isAuthenticated && user && (
+              <Nav.Link onClick={logOut}>Logout</Nav.Link>
+            )}
+          </div>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

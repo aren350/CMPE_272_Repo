@@ -26,73 +26,67 @@ function App() {
       {!isAuthenticated ? (
         <button onClick={() => loginWithRedirect()}>Log In with SSO</button>
       ) : (
-        <>
-          <div>Welcome, {user && user.name}</div>
-          <button onClick={() => logout({ returnTo: window.location.origin })}>
-            Log Out
-          </button>
-          <div className="App">
-            <Routes>
-              <Route path="/" element={<Entry />} />
-              <Route element={<DefaultLayout />}>
-                <Route
-                  exact
-                  path="/dashboard"
-                  element={
-                    <PrivateRoute>
-                      <Dashboard />
-                    </PrivateRoute>
-                  }
-                />
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<Entry />} />
+            <Route element={<DefaultLayout />}>
+              <Route
+                exact
+                path="/dashboard"
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              />
 
-                <Route
-                  path="/add-ticket"
-                  element={
-                    <PrivateRoute>
-                      <SubmitTicketPage />
-                    </PrivateRoute>
-                  }
-                />
+              <Route
+                path="/add-ticket"
+                element={
+                  <PrivateRoute>
+                    <SubmitTicketPage />
+                  </PrivateRoute>
+                }
+              />
 
-                <Route
-                  path="/tickets"
-                  element={
-                    <PrivateRoute>
-                      <TicketLists />
-                    </PrivateRoute>
-                  }
-                />
+              <Route
+                path="/tickets"
+                element={
+                  <PrivateRoute>
+                    <TicketLists />
+                  </PrivateRoute>
+                }
+              />
 
-                <Route
-                  path="/ticket/:tid"
-                  element={
-                    <PrivateRoute>
-                      <Ticket />
-                    </PrivateRoute>
-                  }
-                />
+              <Route
+                path="/ticket/:tid"
+                element={
+                  <PrivateRoute>
+                    <Ticket />
+                  </PrivateRoute>
+                }
+              />
 
-                <Route
-                  path="/signup"
-                  element={
-                    <PrivateRoute>
-                      <Signup />
-                    </PrivateRoute>
-                  }
-                />
+              <Route
+                path="/signup"
+                element={
+                  <PrivateRoute>
+                    <Signup />
+                  </PrivateRoute>
+                }
+              />
 
-                <Route
-                  path="/ai-form"
-                  element={
-                    <PrivateRoute>
-                      <CreateAIPage />
-                    </PrivateRoute>
-                  }
-                />
-              </Route>
-            </Routes>
-          </div>
-        </>
+              <Route
+                path="/ai-form"
+                element={
+                  <PrivateRoute>
+                    <CreateAIPage />
+                  </PrivateRoute>
+                }
+              />
+            </Route>
+          </Routes>
+        </div>
       )}
     </div>
   );
