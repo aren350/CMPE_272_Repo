@@ -5,6 +5,7 @@ from botocore.exceptions import ClientError
 
 app = Flask(__name__)
 CORS(app)
+#CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-2')  # Change region as needed
 ticket_table = dynamodb.Table('Tickets')  # Make sure this table exists in DynamoDB
@@ -37,6 +38,15 @@ def get_ticket(ticket_id):
     except ClientError as e:
         abort(500, description=str(e))
 
+# Get ticket by Username
+@app.route('/tickets/<user_name>', methods=['GET'])
+def get_user_ticket(user_name):
+    try:
+        response = ticket_table.scan()
+        return jsonify(response.get('Items', [])), 200
+    except ClientError as e:
+        abort(500, description=str(e))
+
 # POST a new ticket
 @app.route('/tickets', methods=['POST'])
 def create_ticket():
@@ -48,9 +58,9 @@ def create_ticket():
     ticket_id = str(uuid.uuid4())
     ticket = {
         "TicketId": ticket_id,
-        "title": data["title"],
-        "description": data["description"],
-        "status": "open"
+        "Title": data["title"],
+        "Description": data["description"],
+        "Status": "open"
     }
     try:
         ticket_table.put_item(Item=ticket)
@@ -64,10 +74,10 @@ def update_ticket(ticket_id):
     data = request.get_json()
     update_expr = []
     expr_attr_vals = {}
-    for k in ['title', 'description', 'status']:
-        if k in data:
+    for k, v in [("Title", "title"), ("Description", "description"), ("Status", "status")]:
+        if v in data:
             update_expr.append(f"{k} = :{k}")
-            expr_attr_vals[f":{k}"] = data[k]
+            expr_attr_vals[f":{k}"] = data[v]
     if not update_expr:
         abort(400, description="No valid fields to update")
     try:

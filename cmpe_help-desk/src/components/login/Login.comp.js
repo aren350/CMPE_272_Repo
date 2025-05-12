@@ -1,46 +1,29 @@
-import React from 'react'
 import { Container, Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
-import { useAuth0 } from '@auth0/auth0-react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass}) => {
-    const navigate = useNavigate()
+export const Login = ({handleOnchange,formSwitcher, email, pass}) => {
+    const [username, setUsername] = useState('');
+    const [role, setRole] = useState('');
+    const navigate = useNavigate();
 
-    const { loginWithRedirect, isAuthenticated, user, logout, getAccessTokenSilently } = useAuth0();
-
-    const handleClick =() => {
-        navigate('/dashboard')
-    }
-
-    // useEffect(() => {
-    //     const logUserIntoBackend = async () => {
-    //       try {
-    //         const token = await getAccessTokenSilently();
-    
-    //         const response = await fetch('IDK ENDPOINT', {
-    //           method: 'GET',
-    //           headers: {
-    //             Authorization: `Bearer ${token}`,
-    //             'Content-Type': 'application/json',
-    //           },
-    //         });
-    
-    //         if (!response.ok) {
-    //           throw new Error('Failed to log in to backend');
-    //         }
-    
-    //         const data = await response.json();
-    //         console.log('Backend login successful:', data);
-    //       } catch (err) {
-    //         console.error('Error logging in to backend:', err);
-    //       }
-    //     };
-    
-    //     if (isAuthenticated) {
-    //       logUserIntoBackend();
-    //     }
-    //   }, [isAuthenticated, getAccessTokenSilently]);
+    const handleOnsubmit = (e) => {
+        setRole('')
+        e.preventDefault();
+        
+        sessionStorage.setItem('username', username); // clears when tab is closed
+        if (username === 'admin@email.com') {
+            setRole('admin');
+            sessionStorage.setItem('role', 'admin');
+          } else {
+            setRole('user');
+            sessionStorage.setItem('role', 'user');
+          }
+        console.log('Username:', username);
+        console.log('Role:', role, sessionStorage.getItem('role'))
+        navigate('/tickets');
+      };
 
   return (
     <Container>
@@ -48,21 +31,29 @@ export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass})
             <Col>
             <h1>Client Login </h1>
             <hr /> 
-
-            {!isAuthenticated ? (
-            <Button onClick={() => loginWithRedirect()}>
-              Login
-            </Button>
-          ) : (
-            <>
-              <p>Welcome, {user.name}!</p>
-              <div><Button  onClick={handleClick}>To the DashBoard</Button></div>
-
-              <Button className="mt-2" onClick={() => logout({ returnTo: window.location.origin })}>
-                Logout
-              </Button>
-            </>
-          )}
+            <Form onSubmit={handleOnsubmit}>
+                <Form.Group>
+                    <Form.Label>Email Address</Form.Label>
+                    <Form.Control
+                        type="email"
+                        name="email"
+                        value = {email}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder= "Enter your Email"
+                        required/>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label className='mt-1'>Password</Form.Label>
+                    <Form.Control
+                        type="password"
+                        name="password"
+                        value={pass}
+                        placeholder= "Enter your Password"
+                        required
+                    />
+                </Form.Group>
+                <Button className = "mt-3" type="submit"> Login </Button>
+            </Form>
             <hr />
             </Col>
         </Row>
