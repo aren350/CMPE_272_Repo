@@ -11,7 +11,7 @@ function CreateAIPage() {
   const navigate = useNavigate();
   
   useEffect(() => {
-    localStorage.setItem('username', 'arenrohan@gmail.com')
+    //localStorage.setItem('username', 'arenrohan@gmail.com')
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setUsername(storedUsername)
