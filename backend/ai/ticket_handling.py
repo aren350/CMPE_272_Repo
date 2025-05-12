@@ -51,6 +51,11 @@ def network_diagnosis_task(data):
     print("Running network_diagnosis_task")
     return create_ticket_from_payload(data)
 
+# Task: Ticket for logs
+def log_task(data):
+    print("Running logs_task")
+    return create_ticket_from_payload(data)
+
 
 # Dispatcher: Choose a task function based on category
 def dispatch_task_by_category(category, data):
@@ -60,7 +65,8 @@ def dispatch_task_by_category(category, data):
         "general": general_task,
         "delete": delete_task,
         "software": software_installation_task,
-        "network": network_diagnosis_task
+        "network": network_diagnosis_task,
+        "logs": log_task
     }
 
     task_function = task_map.get(category, general_task)

@@ -18,7 +18,7 @@ CORS(app)
 def classify_ticket(title, description):
     prompt = f"""
     Analyze the following IT support ticket and classify it.
-    Return a JSON with 'priority' (high, medium, low) and 'category' (network, software, delete, general, user creation).
+    Return a JSON with 'priority' (high, medium, low) and 'category' (network, software, delete, general, user creation, logs).
 
     Title: {title}
     Description: {description}
