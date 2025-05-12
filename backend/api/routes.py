@@ -43,9 +43,9 @@ def create_ticket():
     ticket_id = str(uuid.uuid4())
     ticket = {
         "TicketId": ticket_id,
-        "title": data["title"],
-        "description": data["description"],
-        "status": "open"
+        "Title": data["title"],
+        "Description": data["description"],
+        "Status": "open"
     }
     try:
         ticket_table.put_item(Item=ticket)
@@ -59,10 +59,10 @@ def update_ticket(ticket_id):
     data = request.get_json()
     update_expr = []
     expr_attr_vals = {}
-    for k in ['title', 'description', 'status']:
-        if k in data:
+    for k, v in [("Title", "title"), ("Description", "description"), ("Status", "status")]:
+        if v in data:
             update_expr.append(f"{k} = :{k}")
-            expr_attr_vals[f":{k}"] = data[k]
+            expr_attr_vals[f":{k}"] = data[v]
     if not update_expr:
         abort(400, description="No valid fields to update")
     try:
