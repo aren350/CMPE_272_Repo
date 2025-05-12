@@ -5,11 +5,20 @@ import React, { useState } from 'react';
 
 export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass}) => {
     const [username, setUsername] = useState('');
+    const [role, setRole] = useState('');
 
     const handleOnsubmit = (e) => {
         e.preventDefault();
         console.log('Username:', username);
         sessionStorage.setItem('username', username); // clears when tab is closed
+        if (username === 'admin@email.com') {
+            setRole('admin');
+            localStorage.setItem('role', 'admin');
+          } else {
+            setRole('user');
+            localStorage.setItem('role', 'user');
+          }
+        console.log('Role:', role)
       };
 
   return (
