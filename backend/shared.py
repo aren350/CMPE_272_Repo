@@ -16,7 +16,7 @@ with open("config.json") as f:
 client = openai.OpenAI(api_key=config.get("openai_api_key"))
 
 # Create a boto3 session with the default profile
-session = boto3.Session(profile_name="default", region_name="us-east-2")
+session = boto3.Session(region_name="us-east-2")
 dynamodb = session.resource('dynamodb')
 ticket_table = dynamodb.Table('Tickets')
 users_table = dynamodb.Table('Users')

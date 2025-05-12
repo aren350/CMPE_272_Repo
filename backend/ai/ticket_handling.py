@@ -2,7 +2,7 @@ import uuid
 import os
 import datetime
 from botocore.exceptions import ClientError
-from shared import ticket_table
+from shared import ticket_table, users_table
 
 # Shared ticket creation function
 def create_ticket_from_payload(data):
@@ -49,8 +49,38 @@ def general_task(data):
 
 # Task: Ticket for account or access removal
 def delete_task(data):
-    print("Running delete_task (logs a deletion request)")
-    return create_ticket_from_payload(data)
+    print("Running delete_task (executing deletion logic)")
+
+    description = data.get("description", "").lower()
+
+    if "remove user" in description or "delete user" in description:
+        # Extract username from description (simple example)
+        import re
+        match = re.search(r'for (\w+)', description)
+        if not match:
+            return {"error": "Username not found in description for user deletion"}
+
+        username = match.group(1)
+        try:
+            users_table.delete_item(Key={"Name": username})
+            return {"message": f"User '{username}' deleted from Users table"}
+        except ClientError as e:
+            return {"error": f"Failed to delete user: {str(e)}"}
+
+    elif "delete ticket" in description or "ticket id" in description:
+        # Expect ticket_id in the payload
+        ticket_id = data.get("ticket_id")
+        if not ticket_id:
+            return {"error": "Missing 'ticket_id' for ticket deletion"}
+
+        try:
+            ticket_table.delete_item(Key={"TicketId": ticket_id})
+            return {"message": f"Ticket '{ticket_id}' deleted from Tickets table"}
+        except ClientError as e:
+            return {"error": f"Failed to delete ticket: {str(e)}"}
+
+    else:
+        return {"message": "No valid delete command recognized in description"}
 
 
 # Task: Ticket for software installation
