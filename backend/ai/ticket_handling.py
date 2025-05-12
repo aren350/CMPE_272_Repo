@@ -1,4 +1,5 @@
 import uuid
+import os
 from botocore.exceptions import ClientError
 from shared import ticket_table
 
@@ -17,6 +18,13 @@ def create_ticket_from_payload(data):
 
     try:
         ticket_table.put_item(Item=ticket)
+        # Write ticket info to a text file for output
+        output_dir = "ticket_outputs"
+        os.makedirs(output_dir, exist_ok=True)
+        output_path = os.path.join(output_dir, f"ticket_{ticket_id}.txt")
+        with open(output_path, "w") as f:
+            for k, v in ticket.items():
+                f.write(f"{k}: {v}\n")
         return ticket
     except ClientError as e:
         raise RuntimeError(f"Failed to create ticket: {str(e)}")
