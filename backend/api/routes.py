@@ -86,8 +86,12 @@ def create_ticket():
         abort(400, description="Missing required fields")
     ticket_id = str(uuid.uuid4())
 
-    # Classify using LLM
-    priority, category = classify_ticket(data["title"], data["description"])
+    # Classify using LLM only when priority/category isn't set
+    if 'priority' not in data or 'category' not in data:
+        priority, category = classify_ticket(data["title"], data["description"])
+    else:
+        priority = data["priority"]
+        category = data["category"]
 
     ticket = {
         "TicketId": ticket_id,
