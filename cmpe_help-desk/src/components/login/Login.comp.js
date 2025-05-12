@@ -74,7 +74,7 @@
 //     pass: PropTypes.string.isRequired
 // };
 
-import React from 'react'
+/* import React from 'react'
 import { Container, Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { useAuth0 } from '@auth0/auth0-react';
@@ -129,4 +129,48 @@ Login.propTypes ={
     formSwitcher: PropTypes.func.isRequired,
     email: PropTypes.string.isRequired,
     pass: PropTypes.string.isRequired
-};
+}; */
+import React, { useEffect, useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
+
+function Login() {
+  const { loginWithRedirect, logout, user, isAuthenticated, isLoading } = useAuth0();
+  const [role, setRole] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated && user?.email) {
+      localStorage.setItem('username', user.email);
+
+      // Set role based on email
+      const userRole = user.email === 'admin@email.com' ? 'admin' : 'user';
+      setRole(userRole);
+      localStorage.setItem('role', userRole);
+      console.log("username:", user.email);
+      console.log("role:", userRole);
+      // Navigate after login
+      navigate('/tickets/');
+    }
+  }, [isAuthenticated, user, navigate]);
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return (
+    <div>
+      {!isAuthenticated ? (
+        <button onClick={() => loginWithRedirect()}>Login</button>
+      ) : (
+        <div>
+          <p>Welcome, {user.name || user.email}</p>
+          <p>Role: {role}</p>
+          <button onClick={() => logout({ returnTo: window.location.origin })}>
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Login;

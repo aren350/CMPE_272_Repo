@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import "./entry.style.css";
-import { Login } from '../../components/login/Login.comp';
+import Login from '../../components/login/Login.comp';
 import { ResetPassword } from '../../components/password-reset/PasswordReset';
 
 
