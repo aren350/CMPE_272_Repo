@@ -1,7 +1,17 @@
 import React from 'react'
 import { Container, Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
+import React, { useState } from 'react';
+
 export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass}) => {
+    const [username, setUsername] = useState('');
+
+    const handleOnsubmit = (e) => {
+        e.preventDefault();
+        console.log('Username:', username);
+        sessionStorage.setItem('username', username); // clears when tab is closed
+      };
+
   return (
     <Container>
         <Row>
@@ -15,7 +25,7 @@ export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass})
                         type="email"
                         name="email"
                         value = {email}
-                        onChange={handleOnchange}
+                        onChange={(e) => setUsername(e.target.value)}
                         placeholder= "Enter your Email"
                         required/>
                 </Form.Group>
