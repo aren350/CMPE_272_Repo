@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5000'; // Flask server
+const BASE_URL = 'http://127.0.0.1:5000'; // Flask server
 
 export const getTickets = () => axios.get(`${BASE_URL}/tickets`);
 export const getTicketById = (id) => axios.get(`${BASE_URL}/tickets/${id}`);
