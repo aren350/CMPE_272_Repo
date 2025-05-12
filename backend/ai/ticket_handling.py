@@ -1,11 +1,13 @@
 import uuid
 import os
+import datetime
 from botocore.exceptions import ClientError
 from shared import ticket_table
 
 # Shared ticket creation function
 def create_ticket_from_payload(data):
     ticket_id = str(uuid.uuid4())
+    now = datetime.datetime.utcnow().isoformat()
     ticket = {
         "TicketId": ticket_id,
         "created_by": data.get("username", "unknown"),
@@ -15,6 +17,8 @@ def create_ticket_from_payload(data):
         "priority": data["priority"],
         "category": data["category"],
         "tag": data.get("tag", ""),
+        "created_at": now,
+        "updated_at": now
     }
 
     try:
