@@ -1,58 +1,62 @@
-import React, { useState, useEffect } from 'react'
-import { Container, Row, Col, Button } from 'react-bootstrap'
-import { PageBreadcrumb } from '../../components/breadcrumb/Breadcrumb.comp'
-import { SearchForm } from '../../components/search-form/SearchForm.comp'
-import { TicketTable } from '../../components/ticket-table/TicketTable.comp'
-import tickets from '../../assets/data/dummytickets.json'
-import {Link} from "react-router-dom"
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
+function DashboardPage() {
+  const [tickets, setTickets] = useState([]);
+  const [error, setError] = useState('');
 
-export const TicketLists = () => {
+  const username = localStorage.getItem('username');
 
-const [str, setStr] = useState('')
-const [dispTicket, setDispTicket] =useState(tickets)
+  useEffect(() => {
+    if (!username) {
+      setError('No username found in localStorage');
+      return;
+    }
 
-useEffect(() => {},[str, dispTicket])
-
-
-const handleOnchange = e => {
-    const {value} = e.target
-    setStr(value)
-    console.log(e.target)
-    searchTicket(value)
-}
-
-const searchTicket = (sttr) =>{
-    const displayTickets = tickets.filter((row) => 
-        row.subject.toLowerCase().includes(sttr.toLowerCase()))
-    setDispTicket(displayTickets)
-}
+    axios.get(`http://127.0.0.1:5000/tickets/user/${username}`)
+      .then(response => {
+        setTickets(response.data);
+      })
+      .catch(err => {
+        console.error('Error fetching tickets:', err);
+        setError('Failed to load tickets');
+      });
+  }, [username]);
 
   return (
-    <Container>
-        <Row>
-            <Col>
-                <PageBreadcrumb page = "Ticket Lists" />
-            
-            </Col>
-        </Row>
-        <Row className='mt-4'>
-            <Col>
-            <Link to="/add-ticket">
-                <Button variant = "info"> Add New Ticket </Button>
-            </Link>
-            </Col>
-            <Col className = "text-right"> 
-                <SearchForm handleOnchange={handleOnchange} str={str}/>
-            </Col>
-        </Row>
-        <hr />
-        <Row>
-            <Col>
-            <TicketTable tickets= {dispTicket}/>
-            </Col>
-        </Row>
-    </Container>
+    <div style={{ padding: '2rem' }}>
+      <h2>Tickets for {username}</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
 
-  )
+      {tickets.length === 0 && !error ? (
+        <p>No tickets found.</p>
+      ) : (
+        <div>
+          {tickets.map(ticket => (
+            <div
+              key={ticket.TicketId}
+              style={{
+                border: '1px solid #ccc',
+                padding: '1rem',
+                marginBottom: '1rem',
+                borderRadius: '8px',
+              }}
+            >
+              <h3>{ticket.title}</h3>
+              <p><strong>Description:</strong> {ticket.description}</p>
+              <p><strong>Category:</strong> {ticket.category}</p>
+              <p><strong>Priority:</strong> {ticket.priority}</p>
+              <p><strong>Status:</strong> {ticket.status}</p>
+              <p><strong>Tag:</strong> {ticket.tag || 'None'}</p>
+              <p><strong>Created by:</strong> {ticket.created_by}</p>
+              {ticket.created_at && <p><strong>Created at:</strong> {new Date(ticket.created_at).toLocaleString()}</p>}
+              {ticket.updated_at && <p><strong>Updated at:</strong> {new Date(ticket.updated_at).toLocaleString()}</p>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
+
+export default DashboardPage;
