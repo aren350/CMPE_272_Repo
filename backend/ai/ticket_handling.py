@@ -13,7 +13,8 @@ def create_ticket_from_payload(data):
         "description": data["description"],
         "status": "open",
         "priority": data["priority"],
-        "category": data["category"]
+        "category": data["category"],
+        "tag": data.get("tag", ""),
     }
 
     try:
@@ -59,10 +60,32 @@ def network_diagnosis_task(data):
     print("Running network_diagnosis_task")
     return create_ticket_from_payload(data)
 
-# Task: Ticket for logs
+# Task: Fetch tickets by tag for logs
 def log_task(data):
-    print("Running logs_task")
-    return create_ticket_from_payload(data)
+    print("Running logs_task (fetching by tag)")
+    tag = data.get("tag", "")
+    if not tag:
+        raise ValueError("Tag must be provided in the payload for log tickets.")
+    # Query DynamoDB for tickets with the given tag
+    try:
+        response = ticket_table.scan(
+            FilterExpression="tag = :tagval",
+            ExpressionAttributeValues={":tagval": tag}
+        )
+
+        tickets = response.get("Items", [])
+        # Output results to a text file
+        output_dir = "ticket_outputs"
+        os.makedirs(output_dir, exist_ok=True)
+        output_path = os.path.join(output_dir, f"log_query_tag_{tag}.txt")
+        with open(output_path, "w") as f:
+            for ticket in tickets:
+                f.write("---\n")
+                for k, v in ticket.items():
+                    f.write(f"{k}: {v}\n")
+        return tickets
+    except ClientError as e:
+        raise RuntimeError(f"Failed to fetch tickets by tag: {str(e)}")
 
 
 # Dispatcher: Choose a task function based on category
