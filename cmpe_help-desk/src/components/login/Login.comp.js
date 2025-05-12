@@ -7,11 +7,40 @@ import { useNavigate } from 'react-router-dom';
 export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass}) => {
     const navigate = useNavigate()
 
-    const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
+    const { loginWithRedirect, isAuthenticated, user, logout, getAccessTokenSilently } = useAuth0();
 
     const handleClick =() => {
         navigate('/dashboard')
     }
+
+    // useEffect(() => {
+    //     const logUserIntoBackend = async () => {
+    //       try {
+    //         const token = await getAccessTokenSilently();
+    
+    //         const response = await fetch('IDK ENDPOINT', {
+    //           method: 'GET',
+    //           headers: {
+    //             Authorization: `Bearer ${token}`,
+    //             'Content-Type': 'application/json',
+    //           },
+    //         });
+    
+    //         if (!response.ok) {
+    //           throw new Error('Failed to log in to backend');
+    //         }
+    
+    //         const data = await response.json();
+    //         console.log('Backend login successful:', data);
+    //       } catch (err) {
+    //         console.error('Error logging in to backend:', err);
+    //       }
+    //     };
+    
+    //     if (isAuthenticated) {
+    //       logUserIntoBackend();
+    //     }
+    //   }, [isAuthenticated, getAccessTokenSilently]);
 
   return (
     <Container>
@@ -34,31 +63,6 @@ export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass})
               </Button>
             </>
           )}
-
-            {/* <Form onSubmit={handleOnsubmit}>
-                <Form.Group>
-                    <Form.Label>Email Address</Form.Label>
-                    <Form.Control
-                        type="email"
-                        name="email"
-                        value = {email}
-                        onChange={handleOnchange}
-                        placeholder= "Enter your Email"
-                        required/>
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label className='mt-1'>Password</Form.Label>
-                    <Form.Control
-                        type="password"
-                        name="password"
-                        value={pass}
-                        onChange={handleOnchange }
-                        placeholder= "Enter your Password"
-                        required
-                    />
-                </Form.Group>
-                <Button className = "mt-3" type="submit"> Login </Button>
-            </Form> */}
             <hr />
             </Col>
         </Row>
