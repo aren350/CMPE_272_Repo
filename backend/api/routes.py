@@ -7,6 +7,7 @@ import uuid
 import openai
 import json
 import traceback
+import re
 
 app = Flask(__name__)
 CORS(app)
@@ -33,15 +34,24 @@ def classify_ticket(title, description):
     """
     try:
         print("Calling OpenAI API with:", title, description)
+        print("Waiting for OpenAI response...")
         response = client.chat.completions.create(
+            
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=100
+            max_tokens=100,
+            timeout=10
         )
         print("LLM raw response:", response)
         print("LLM message content:", response.choices[0].message.content)
-        result = json.loads(response.choices[0].message.content)
+        content = response.choices[0].message.content.strip()
+        json_match = re.search(r"\{.*\}", content, re.DOTALL)
+        if not json_match:
+            raise ValueError("No valid JSON object found in LLM response")
+
+        result = json.loads(json_match.group())
         return result.get('priority', 'medium'), result.get('category', 'general')
+    
     except Exception as e:
         print("LLM classification failed:")
         traceback.print_exc()
