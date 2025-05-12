@@ -5,6 +5,7 @@ from botocore.exceptions import ClientError
 
 app = Flask(__name__)
 CORS(app)
+#CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-2')  # Change region as needed
 ticket_table = dynamodb.Table('Tickets')  # Make sure this table exists in DynamoDB
@@ -29,6 +30,15 @@ def get_ticket(ticket_id):
             return jsonify(item), 200
         else:
             abort(404, description="Ticket not found")
+    except ClientError as e:
+        abort(500, description=str(e))
+
+# Get ticket by Username
+@app.route('/tickets/<user_name>', methods=['GET'])
+def get_user_ticket(user_name):
+    try:
+        response = ticket_table.scan()
+        return jsonify(response.get('Items', [])), 200
     except ClientError as e:
         abort(500, description=str(e))
 

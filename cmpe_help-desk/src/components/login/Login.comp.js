@@ -1,24 +1,28 @@
-import React from 'react'
 import { Container, Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass}) => {
+export const Login = ({handleOnchange,formSwitcher, email, pass}) => {
     const [username, setUsername] = useState('');
     const [role, setRole] = useState('');
+    const navigate = useNavigate();
 
     const handleOnsubmit = (e) => {
+        setRole('')
         e.preventDefault();
-        console.log('Username:', username);
+        
         sessionStorage.setItem('username', username); // clears when tab is closed
         if (username === 'admin@email.com') {
             setRole('admin');
-            localStorage.setItem('role', 'admin');
+            sessionStorage.setItem('role', 'admin');
           } else {
             setRole('user');
-            localStorage.setItem('role', 'user');
+            sessionStorage.setItem('role', 'user');
           }
-        console.log('Role:', role)
+        console.log('Username:', username);
+        console.log('Role:', role, sessionStorage.getItem('role'))
+        navigate('/tickets');
       };
 
   return (
@@ -44,7 +48,6 @@ export const Login = ({handleOnchange,handleOnsubmit,formSwitcher, email, pass})
                         type="password"
                         name="password"
                         value={pass}
-                        onChange={handleOnchange }
                         placeholder= "Enter your Password"
                         required
                     />
