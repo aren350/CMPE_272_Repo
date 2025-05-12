@@ -22,8 +22,8 @@ client = openai.OpenAI(api_key=config.get("openai_api_key"))
 # Create a boto3 session with the default profile
 session = boto3.Session(profile_name="default", region_name="us-east-2")
 dynamodb = session.resource('dynamodb')
-ticket_table = dynamodb.Table('Tickets')
-users_table = dynamodb.Table('Users')
+ticket_table = session.resource('dynamodb').Table('Tickets')
+users_table = session.resource('dynamodb').Table('Users')
 
 def classify_ticket(title, description):
     prompt = f"""
@@ -89,8 +89,11 @@ def get_ticket(ticket_id):
 @app.route('/tickets/<user_name>', methods=['GET'])
 def get_user_ticket(user_name):
     try:
+        # Scan all tickets and filter by created_by == user_name
         response = ticket_table.scan()
-        return jsonify(response.get('Items', [])), 200
+        all_tickets = response.get('Items', [])
+        user_tickets = [ticket for ticket in all_tickets if ticket.get('created_by') == user_name]
+        return jsonify(user_tickets), 200
     except ClientError as e:
         abort(500, description=str(e))
 
