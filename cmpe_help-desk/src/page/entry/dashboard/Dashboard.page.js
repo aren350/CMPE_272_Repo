@@ -13,8 +13,8 @@ export const Dashboard = () => {
   const [error, setError] = useState('');
   
   useEffect(() => {
-    const storedRole = sessionStorage.getItem('role');
-    const storedUser = sessionStorage.getItem('username');
+    const storedRole = localStorage.getItem('role');
+    const storedUser = localStorage.getItem('username');
     if (storedRole === 'admin') {
         axios.get('http://127.0.0.1:5000/tickets')  // Adjust URL as needed
       .then(response => {
