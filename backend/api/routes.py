@@ -8,27 +8,17 @@ import openai
 import json
 import traceback
 import re
+from ai.ticket_handling import dispatch_task_by_category
+from shared import ticket_table, users_table, client
 
 app = Flask(__name__)
 CORS(app)
 #CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 
-# Load OpenAI API key from config.json
-with open("config.json") as f:
-    config = json.load(f)
-
-client = openai.OpenAI(api_key=config.get("openai_api_key"))
-
-# Create a boto3 session with the default profile
-session = boto3.Session(profile_name="default", region_name="us-east-2")
-dynamodb = session.resource('dynamodb')
-ticket_table = session.resource('dynamodb').Table('Tickets')
-users_table = session.resource('dynamodb').Table('Users')
-
 def classify_ticket(title, description):
     prompt = f"""
     Analyze the following IT support ticket and classify it.
-    Return a JSON with 'priority' (high, medium, low) and 'category' (e.g., network, hardware, software, login).
+    Return a JSON with 'priority' (high, medium, low) and 'category' (network, software, delete, general, user creation).
 
     Title: {title}
     Description: {description}
@@ -101,18 +91,18 @@ def get_user_ticket(user_name):
 @app.route('/tickets', methods=['POST'])
 def create_ticket():
     data = request.get_json()
+
+    # Basic input validation
     if not data or 'title' not in data or 'description' not in data or 'username' not in data:
         abort(400, description="Missing required fields including username")
 
-    # Check if the user exists
+    # Validate the user exists
     try:
         user_check = users_table.get_item(Key={'Name': data['username']})
         if 'Item' not in user_check:
             abort(400, description="User does not exist")
     except ClientError as e:
         abort(500, description=f"User lookup failed: {str(e)}")
-        abort(400, description="Missing required fields")
-    ticket_id = str(uuid.uuid4())
 
     # Classify using LLM only when priority/category isn't set
     if 'priority' not in data or 'category' not in data:
@@ -121,20 +111,13 @@ def create_ticket():
         priority = data["priority"]
         category = data["category"]
 
-    ticket = {
-        "TicketId": ticket_id,
-        "created_by": data.get("username", "unknown"),
-        "title": data["title"],
-        "description": data["description"],
-        "status": "open",
-        "priority": priority,
-        "category": category
-    }
-    try:
-        ticket_table.put_item(Item=ticket)
-        return jsonify(ticket), 201
-    except ClientError as e:
-        abort(500, description=str(e))
+    data['priority'] = priority
+    data['category'] = category
+
+    # Dispatch to AI task function based on category
+    response = dispatch_task_by_category(category, data)
+    return jsonify(response), 201
+
 
 # PUT update ticket
 @app.route('/tickets/<ticket_id>', methods=['PUT'])
