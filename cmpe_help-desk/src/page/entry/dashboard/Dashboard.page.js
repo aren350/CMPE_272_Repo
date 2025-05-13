@@ -26,7 +26,7 @@ export const Dashboard = () => {
       });       
     }
     else {
-        axios.get(`http://127.0.0.1:5000/tickets/'${storedUser}'`)  // Adjust URL as needed
+        axios.get(`http://127.0.0.1:5000/tickets/${storedUser}`)  // Adjust URL as needed
       .then(response => {
         setTickets(response.data);
       })

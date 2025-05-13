@@ -144,7 +144,8 @@ function Login() {
       localStorage.setItem('username', user.email);
 
       // Set role based on email
-      const userRole = user.email === 'admin@email.com' ? 'admin' : 'user';
+      const adminEmails = ['admin@email.com', 'techtonic@email.com'];
+      const userRole = adminEmails.includes(user.email) ? 'admin' : 'user';
       setRole(userRole);
       localStorage.setItem('role', userRole);
       console.log("username:", user.email);

@@ -86,6 +86,18 @@ def register_routes(app):
             return jsonify(user_tickets), 200
         except ClientError as e:
             abort(500, description=str(e))
+            
+    # Get ticket by Username
+    @app.route('/tickets/user/<user_name>', methods=['GET'])
+    def get_tickets_by_user(user_name):
+        try:
+            # Scan all tickets and filter by created_by == user_name
+            response = ticket_table.scan()
+            all_tickets = response.get('Items', [])
+            user_tickets = [ticket for ticket in all_tickets if ticket.get('created_by') == user_name]
+            return jsonify(user_tickets), 200
+        except ClientError as e:
+            abort(500, description=str(e))
 
     # POST a new ticket
     @app.route('/tickets', methods=['POST'])
