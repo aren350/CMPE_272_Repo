@@ -4,10 +4,13 @@ import axios from 'axios';
 function DashboardPage() {
   const [tickets, setTickets] = useState([]);
   const [error, setError] = useState('');
-
   const username = localStorage.getItem('username');
 
   useEffect(() => {
+    fetchTickets();
+  }, []);
+
+  const fetchTickets = () => {
     if (!username) {
       setError('No username found in localStorage');
       return;
@@ -21,7 +24,19 @@ function DashboardPage() {
         console.error('Error fetching tickets:', err);
         setError('Failed to load tickets');
       });
-  }, [username]);
+  };
+
+  const handleDelete = (ticketId) => {
+    axios.delete(`http://127.0.0.1:5000/tickets/${ticketId}`)
+      .then(() => {
+        // Remove deleted ticket from state
+        setTickets(prev => prev.filter(ticket => ticket.TicketId !== ticketId));
+      })
+      .catch(err => {
+        console.error('Error deleting ticket:', err);
+        alert('Failed to delete ticket');
+      });
+  };
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -40,9 +55,11 @@ function DashboardPage() {
                 padding: '1rem',
                 marginBottom: '1rem',
                 borderRadius: '8px',
+                backgroundColor: '#f9f9f9'
               }}
             >
               <h3>{ticket.title}</h3>
+              <p><strong>Ticket ID:</strong> {ticket.TicketId}</p>
               <p><strong>Description:</strong> {ticket.description}</p>
               <p><strong>Category:</strong> {ticket.category}</p>
               <p><strong>Priority:</strong> {ticket.priority}</p>
@@ -51,6 +68,21 @@ function DashboardPage() {
               <p><strong>Created by:</strong> {ticket.created_by}</p>
               {ticket.created_at && <p><strong>Created at:</strong> {new Date(ticket.created_at).toLocaleString()}</p>}
               {ticket.updated_at && <p><strong>Updated at:</strong> {new Date(ticket.updated_at).toLocaleString()}</p>}
+
+              <button
+                onClick={() => handleDelete(ticket.TicketId)}
+                style={{
+                  marginTop: '1rem',
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Delete
+              </button>
             </div>
           ))}
         </div>
