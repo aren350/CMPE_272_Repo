@@ -19,8 +19,60 @@ function App() {
 
   if (isLoading) return <div>Loading...</div>;
 
-  // Example: Protect routes or show login button
-  // You can further wire this into your routing and header
+  if (!isAuthenticated) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#f5f8fa",
+        }}
+      >
+        <div
+          style={{
+            background: "white",
+            borderRadius: 12,
+            boxShadow: "0 2px 16px rgba(0,0,0,0.08)",
+            padding: "2.5rem 2rem",
+            minWidth: 340,
+            textAlign: "center",
+          }}
+        >
+          <img
+            src={require("./logo.svg").default}
+            alt="Help Desk Logo"
+            style={{ width: 64, height: 64, marginBottom: 24 }}
+          />
+          <h2 style={{ marginBottom: 16, color: "#007bff", fontWeight: 700 }}>
+            Welcome to Help Desk
+          </h2>
+          <p style={{ marginBottom: 32, color: "#555" }}>
+            Sign in with your SSO credentials to access the platform.
+          </p>
+          <button
+            onClick={() => loginWithRedirect()}
+            style={{
+              background: "#007bff",
+              color: "white",
+              border: "none",
+              borderRadius: 6,
+              padding: "0.75rem 2rem",
+              fontSize: 18,
+              fontWeight: 600,
+              letterSpacing: 1,
+              cursor: "pointer",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+            }}
+          >
+            Log In with SSO
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       {!isAuthenticated ? (
