@@ -41,6 +41,9 @@ export const Header = () => {
             <Nav.Link as={Link} to="/add-ticket">
               + Add Ticket
             </Nav.Link>
+            <Nav.Link as={Link} to="/ai-form">
+              AI Functions
+            </Nav.Link>
             {isAuthenticated && user && (
               <Nav.Link onClick={logOut}>Logout</Nav.Link>
             )}
