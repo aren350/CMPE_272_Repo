@@ -61,3 +61,5 @@ yarn-error.log*
 .env
 .env.local
 .env.*.local
+
+backend/ticket_outputs/
