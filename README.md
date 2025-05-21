@@ -142,6 +142,9 @@ Runs on: `http://localhost:3000`
 ![image](https://github.com/user-attachments/assets/89d7d924-245d-4a17-94ec-dcaa0c32d2f3)
 ![image](https://github.com/user-attachments/assets/610e7c19-87aa-4430-81f6-032369db4ffd)
 
+## Deployment on AWS 
+![image](https://github.com/user-attachments/assets/c02f6ca4-061d-41c5-8b71-f092607e543d)
+![image](https://github.com/user-attachments/assets/839fb77e-f9b8-4d38-a0a9-951f5cb9000d)
 
 
 
