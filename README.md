@@ -15,11 +15,13 @@ A fullstack internal support portal for managing IT service tickets across an or
 ├── backend/                     # Flask API + LLM logic + DynamoDB integration
 │   ├── ai/ticket_handling.py    # Task dispatching utilizing AI action handlers by category
 │   ├── api/routes.py            # API routes
+│   ├── Dockerfile               # Docker configuration for deploying backend containers
 │   ├── app.py                   # Running the Flask App
 │   ├── config.json              # OpenAI API key + config
 │   ├── test.py                  # Automated Unit and Integration Tests
 │   └── shared.py                # Reusable resources like ticket_table
 └── cmpe_help-desk/              # React client app
+│   └── Dockerfile               # Docker configuration for deploying frontend containers
 ```
 
 ## Features
@@ -52,7 +54,7 @@ When a ticket is submitted without a `"priority"` or `"category"`, the backend w
 - Dispatch the task to a relevant handler (e.g., delete user or log retrieval)
 
 ## Sample Ticket Submission
-
+A simple test connection to see if your OpenAI model has been succesfully connected with your config.json api key is running this command within the backend folder to create a ticket. 
 ```bash
 curl -X POST http://127.0.0.1:5000/tickets \
 -H "Content-Type: application/json" \
@@ -114,9 +116,15 @@ pytest test.py
 An example of a successful run:
 ![image](https://github.com/user-attachments/assets/e570cb2c-92ee-4b92-865b-11b14cd0298d)
 
+Docker Deployment:
+```bash
+cd backend
+docker build -t helpdesk-backend .
+docker run -p 5000:5000 helpdesk-backend
+```
 
 ### Frontend Setup
-
+Running in terminal
 ```bash
 cd cmpe_help-desk
 npm install
@@ -125,7 +133,12 @@ npm start
 
 Runs on: `http://localhost:3000`
 
-
+Docker Deployment:
+```bash
+cd cmpe_help-desk
+docker build -t helpdesk-frontend .
+docker run -p 3000:80 helpdesk-frontend
+```
 
 ## Application Flow
 ![image](https://github.com/user-attachments/assets/f9663abc-55de-4126-ad0c-26f4542fc807)
