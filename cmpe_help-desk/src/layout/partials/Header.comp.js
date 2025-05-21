@@ -6,6 +6,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 export const Header = () => {
   const { isAuthenticated, user, logout } = useAuth0();
+  const role = localStorage.getItem("role") || "user";
 
   const logOut = () => {
     logout({ returnTo: window.location.origin });
@@ -32,9 +33,11 @@ export const Header = () => {
             </span>
           )}
           <div style={{ display: "flex", gap: "1rem" }}>
-            <Nav.Link as={Link} to="/dashboard">
-              Dashboard
-            </Nav.Link>
+            {role === "admin" && (
+              <Nav.Link as={Link} to="/dashboard">
+                Dashboard
+              </Nav.Link>
+            )}
             <Nav.Link as={Link} to="/tickets">
               Tickets
             </Nav.Link>
